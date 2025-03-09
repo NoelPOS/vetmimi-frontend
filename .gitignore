@@ -1,0 +1,9 @@
+
+.env
+node_modules
+build
+dist
+coverage
+.vscode
+.idea
+*.log
