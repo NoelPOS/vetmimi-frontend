@@ -92,7 +92,7 @@ export default function PostPage() {
         dangerouslySetInnerHTML={{ __html: post && post.content }}
       ></div>
 
-      <CommentSection postId={post._id} />
+      {/* <CommentSection postId={post._id} /> */}
 
       <div className='bg-yellow-400 flex flex-col justify-center items-center mb-5 rounded-lg'>
         <h1 className='text-3xl font-semibold mt-5 text-white'>
