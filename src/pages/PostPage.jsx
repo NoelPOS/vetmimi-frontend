@@ -47,6 +47,7 @@ export default function PostPage() {
         )
         const data = await res.json()
         if (res.ok) {
+          console.log('Recent posts', data.posts)
           setRecentPosts(data.posts)
         }
       }
