@@ -43,7 +43,7 @@ export default function PostPage() {
     try {
       const fetchRecentPosts = async () => {
         const res = await fetch(
-          `https://vetmimi-backend.vercel.app/api/post/getposts?limit=3`
+          `${import.meta.env.VITE_BACKEND_URL}/post/getposts?limit=3`
         );
         const data = await res.json();
         if (res.ok) {

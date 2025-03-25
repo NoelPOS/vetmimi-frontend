@@ -2,17 +2,21 @@ import { Link } from "react-router-dom";
 import CallToAction from "../components/CallToAction";
 import { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
+import CustomLoading from "../components/CustomLoading";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
+      setLoading(true);
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/post/getposts`
       );
       const data = await res.json();
       setPosts(data.posts);
+      setLoading(false);
     };
     fetchPosts();
   }, []);
@@ -37,22 +41,21 @@ export default function Home() {
         <CallToAction />
       </div>
       <div className=" mx-auto p-3 flex flex-col gap-8 py-7">
-        {posts && posts.length > 0 && (
-          <div className="flex flex-col gap-6">
-            <h2 className="text-2xl font-semibold text-center">Recent Posts</h2>
-            <div className="flex flex-wrap gap-4 items-center justify-center">
-              {posts.map((post) => (
-                <PostCard key={post._id} post={post} />
-              ))}
-            </div>
-            <Link
-              to={"/search"}
-              className="text-lg text-teal-500 hover:underline text-center"
-            >
-              View all posts
-            </Link>
+        <div className="flex flex-col gap-6">
+          <h2 className="text-2xl font-semibold text-center">Recent Posts</h2>
+          <div className="flex flex-wrap gap-4 items-center justify-center">
+            {posts &&
+              posts.length > 0 &&
+              posts.map((post) => <PostCard key={post._id} post={post} />)}
+            {loading && <CustomLoading />}
           </div>
-        )}
+          <Link
+            to={"/search"}
+            className="text-lg text-teal-500 hover:underline text-center"
+          >
+            View all posts
+          </Link>
+        </div>
       </div>
     </div>
   );

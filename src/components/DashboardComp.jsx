@@ -8,6 +8,7 @@ import {
 } from "react-icons/hi";
 import { Button, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
+import CustomLoading from "./CustomLoading";
 
 export default function DashboardComp() {
   const [users, setUsers] = useState([]);
@@ -20,11 +21,15 @@ export default function DashboardComp() {
   const [lastMonthPosts, setLastMonthPosts] = useState(0);
   const [lastMonthComments, setLastMonthComments] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
+  const [userLoading, setUserLoading] = useState(false);
+  const [postLoading, setPostLoading] = useState(false);
+  const [commentLoading, setCommentLoading] = useState(false);
   useEffect(() => {
     const fetchUsers = async () => {
+      setUserLoading(true);
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/user/getusers?limit=5`,
+          `${import.meta.env.VITE_BACKEND_URL}/user/getusers?limit=3`,
           {
             credentials: "include",
           }
@@ -34,15 +39,19 @@ export default function DashboardComp() {
           setUsers(data.users);
           setTotalUsers(data.totalUsers);
           setLastMonthUsers(data.lastMonthUsers);
+          setUserLoading(false);
         }
       } catch (error) {
         console.log(error.message);
+      } finally {
+        setUserLoading(false);
       }
     };
     const fetchPosts = async () => {
+      setPostLoading(true);
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/post/getposts?limit=5`,
+          `${import.meta.env.VITE_BACKEND_URL}/post/getposts?limit=3`,
           {
             credentials: "include",
           }
@@ -52,15 +61,19 @@ export default function DashboardComp() {
           setPosts(data.posts);
           setTotalPosts(data.totalPosts);
           setLastMonthPosts(data.lastMonthPosts);
+          setPostLoading(false);
         }
       } catch (error) {
         console.log(error.message);
+      } finally {
+        setPostLoading(false);
       }
     };
     const fetchComments = async () => {
+      setCommentLoading(true);
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/comment/getcomments?limit=5`,
+          `${import.meta.env.VITE_BACKEND_URL}/comment/getcomments?limit=3`,
           {
             credentials: "include",
           }
@@ -70,9 +83,12 @@ export default function DashboardComp() {
           setComments(data.comments);
           setTotalComments(data.totalComments);
           setLastMonthComments(data.lastMonthComments);
+          setCommentLoading(false);
         }
       } catch (error) {
         console.log(error.message);
+      } finally {
+        setCommentLoading(false);
       }
     };
     if (currentUser.isAdmin) {
@@ -82,7 +98,7 @@ export default function DashboardComp() {
     }
   }, [currentUser]);
   return (
-    <div className="p-3 md:mx-auto">
+    <div className="py-3 md:mx-auto ">
       <div className="flex-wrap flex gap-4 justify-center">
         <div className="flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md">
           <div className="flex justify-between">
@@ -136,7 +152,7 @@ export default function DashboardComp() {
         </div>
       </div>
       <div className="flex flex-wrap gap-4 py-3 mx-auto justify-center">
-        <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
+        <div className="flex flex-col w-full md:w-1/4 shadow-md p-2 rounded-md dark:bg-gray-800">
           <div className="flex justify-between  p-3 text-sm font-semibold">
             <h1 className="text-center p-2">Recent users</h1>
             <Button outline>
@@ -148,6 +164,7 @@ export default function DashboardComp() {
               <Table.HeadCell>User image</Table.HeadCell>
               <Table.HeadCell>Username</Table.HeadCell>
             </Table.Head>
+            {userLoading && <CustomLoading />}
             {users &&
               users.map((user) => (
                 <Table.Body key={user._id} className="divide-y">
@@ -165,7 +182,7 @@ export default function DashboardComp() {
               ))}
           </Table>
         </div>
-        <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
+        <div className="flex flex-col w-full md:w-1/4 shadow-md p-2 rounded-md dark:bg-gray-800">
           <div className="flex justify-between  p-3 text-sm font-semibold">
             <h1 className="text-center p-2">Recent comments</h1>
             <Button outline>
@@ -177,6 +194,7 @@ export default function DashboardComp() {
               <Table.HeadCell>Comment content</Table.HeadCell>
               <Table.HeadCell>Likes</Table.HeadCell>
             </Table.Head>
+            {commentLoading && <CustomLoading />}
             {comments &&
               comments.map((comment) => (
                 <Table.Body key={comment._id} className="divide-y">
@@ -190,7 +208,7 @@ export default function DashboardComp() {
               ))}
           </Table>
         </div>
-        <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
+        <div className="flex flex-col w-full md:w-2/4 shadow-md p-2 rounded-md dark:bg-gray-800">
           <div className="flex justify-between  p-3 text-sm font-semibold">
             <h1 className="text-center p-2">Recent posts</h1>
             <Button outline>
@@ -203,6 +221,7 @@ export default function DashboardComp() {
               <Table.HeadCell>Post Title</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
             </Table.Head>
+            {postLoading && <CustomLoading />}
             {posts &&
               posts.map((post) => (
                 <Table.Body key={post._id} className="divide-y">
